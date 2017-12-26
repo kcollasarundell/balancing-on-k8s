@@ -1,4 +1,6 @@
 package: github.com/kcollasarundell/balancing-on-k8s
+ignore: 
+- golang.org/x/net/context
 import:
 - package: github.com/golang/protobuf
   subpackages:
@@ -9,12 +11,6 @@ import:
   - prometheus
   - prometheus/promhttp
 - package: go.uber.org/ratelimit
-- package: golang.org/x/net
-  subpackages:
-  - context
-- package: golang.org/x/time
-  subpackages:
-  - rate
 - package: google.golang.org/grpc
   version: master
   subpackages:

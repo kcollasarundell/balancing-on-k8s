@@ -1,5 +1,5 @@
-hash: 9f51e3ff1f679e7d8de6a1a5f861cbdb6e2e386f78d2ddcacb10b458b11ac22d
-updated: 2017-12-26T15:41:34.323418+07:00
+hash: 81e257c7b6c80e827d8493aabf16322da6fdde83758c853bce0b175a51baba4d
+updated: 2017-12-26T16:08:46.699788+07:00
 imports:
 - name: github.com/beorn7/perks
   version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
@@ -44,16 +44,11 @@ imports:
 - name: golang.org/x/net
   version: e90d6d0afc4c315a0d87a568ae68577cc15149a0
   subpackages:
-  - context
   - http2
   - http2/hpack
   - internal/timeseries
   - lex/httplex
   - trace
-- name: golang.org/x/time
-  version: 6dc17368e09b0e8634d71cac8168d853e869a0c7
-  subpackages:
-  - rate
 - name: google.golang.org/genproto
   version: a8101f21cf983e773d0c1133ebc5424792003214
   subpackages:
