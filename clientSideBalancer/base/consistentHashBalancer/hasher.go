@@ -68,10 +68,6 @@ func (n nodes) Len() int           { return len(n) }
 func (n nodes) Swap(i, j int)      { n[i], n[j] = n[j], n[i] }
 func (n nodes) Less(i, j int) bool { return n[i].hashID < n[j].hashID }
 
-//----------------------------------------------------------
-// Helpers
-//----------------------------------------------------------
-
 func hashID(key string) uint32 {
 	return crc32.ChecksumIEEE([]byte(key))
 }
