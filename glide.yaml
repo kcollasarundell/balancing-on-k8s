@@ -1,0 +1,27 @@
+package: github.com/kcollasarundell/balancing-on-k8s
+import:
+- package: github.com/golang/protobuf
+  subpackages:
+  - proto
+- package: github.com/prometheus/client_golang
+  version: ~0.9.0-pre1
+  subpackages:
+  - prometheus
+  - prometheus/promhttp
+- package: go.uber.org/ratelimit
+- package: golang.org/x/net
+  subpackages:
+  - context
+- package: golang.org/x/time
+  subpackages:
+  - rate
+- package: google.golang.org/grpc
+  version: master
+  subpackages:
+  - balancer
+  - balancer/base
+  - balancer/roundrobin
+  - grpclog
+  - naming
+  - reflection
+  - resolver
