@@ -11,14 +11,14 @@ import (
 )
 
 type ring struct {
-	nodes  nodes
-	rounds int
-	size   int
+	nodes    nodes
+	replicas int
+	size     int
 	sync.Mutex
 }
 
-func newRing(rounds int) *ring {
-	return &ring{nodes: nodes{}, rounds: rounds}
+func newRing(replicas int) *ring {
+	return &ring{nodes: nodes{}, replicas: replicas}
 }
 
 func (r *ring) addNode(address resolver.Address, subConn balancer.SubConn) {
@@ -27,10 +27,10 @@ func (r *ring) addNode(address resolver.Address, subConn balancer.SubConn) {
 
 	r.size++
 
-	for round := 0; round < r.rounds; round++ {
+	for replica := 0; replica < r.replicas; replica++ {
 		node := &node{
 			id:      address.Addr,
-			hashID:  hashID(address.Addr + fmt.Sprintf("%d", round)),
+			hashID:  hashID(address.Addr + fmt.Sprintf("%d", replica)),
 			subConn: &subConn,
 		}
 		r.nodes = append(r.nodes, node)
@@ -44,11 +44,11 @@ func (r *ring) removeNode(id string) error {
 
 func (r *ring) get(id string) *node {
 
-	searchfn := func(i int) bool {
+	s := func(i int) bool {
 		return r.nodes[i].hashID >= hashID(id)
 	}
 
-	i := sort.Search(r.nodes.Len(), searchfn)
+	i := sort.Search(r.nodes.Len(), s)
 
 	if i >= r.nodes.Len() {
 		i = 0
