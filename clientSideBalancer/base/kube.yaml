@@ -1,0 +1,20 @@
+apiVersion: apps/v1beta2 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: base
+  labels:
+    provides: base
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      provides: base
+  template:
+    metadata:
+      labels:
+        provides: base
+    spec:
+      containers:
+      - name: base
+        imagePullPolicy: Never # I'm too lazy to set up a registry for my minikube setup
+        image: base:1

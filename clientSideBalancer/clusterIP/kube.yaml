@@ -1,0 +1,20 @@
+apiVersion: apps/v1beta2 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: cluster-ip
+  labels:
+    consumes: rng
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      provides: cluster-ip
+  template:
+    metadata:
+      labels:
+        provides: cluster-ip
+    spec:
+      containers:
+      - name: cluster-ip
+        imagePullPolicy: Never # I'm too lazy to set up a registry for my minikube setup
+        image: clusterip:5
