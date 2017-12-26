@@ -1,0 +1,55 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: rng-cluster
+spec:
+  selector:
+    provides: rng
+  ports:
+  - protocol: TCP
+    port: 8081
+    targetPort: 8081
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: rng-headless
+  labels:
+    provides: rng
+spec:
+  clusterIP: None
+  selector:
+    provides: rng
+  ports:
+  - protocol: TCP
+    name: grpclb
+    port: 8081
+    targetPort: 8081
+  - protocol: TCP
+    name: metrics
+    port: 8080
+    targetPort: 8080
+---
+apiVersion: apps/v1beta2 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: rng
+  labels:
+    provides: rng
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      provides: rng
+  template:
+    metadata:
+      labels:
+        provides: rng
+    spec:
+      containers:
+      - name: rng
+        imagePullPolicy: Never
+        image: rng:3
+        ports:
+        - containerPort: 8080
+        - containerPort: 8081

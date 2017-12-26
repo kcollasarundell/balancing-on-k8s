@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package rng;
+
+service rng {
+    rpc rng (Source) returns (RN);
+}
+message Source {
+    string name = 1;
+
+}
+message RN {
+    int64 RN = 1;
+}
