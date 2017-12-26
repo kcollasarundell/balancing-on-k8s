@@ -9,8 +9,6 @@ import (
 	"syscall"
 	"time"
 
-	"golang.org/x/time/rate"
-
 	"github.com/kcollasarundell/balancing-on-k8s/rng"
 	"google.golang.org/grpc"
 )
@@ -32,7 +30,7 @@ func Core() context.Context {
 }
 
 // Placeholder is just the basic structure to be redone in each of the examples (or used here)
-func Placeholder(ctx context.Context, address string, grpcopts ...grpc.DialOption) (rng.RngClient, *rate.Limiter) {
+func Placeholder(ctx context.Context, address string, grpcopts ...grpc.DialOption) rng.RngClient {
 
 	// Set up a connection to the server.
 	grpcopts = append(grpcopts, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(10*time.Second))
@@ -43,9 +41,7 @@ func Placeholder(ctx context.Context, address string, grpcopts ...grpc.DialOptio
 	defer conn.Close()
 	c := rng.NewRngClient(conn)
 
-	rl := rate.NewLimiter(rate.Limit(1), 0)
-
-	return c, rl
+	return c
 }
 
 // Request makes random number requests against the backend until told to quit
