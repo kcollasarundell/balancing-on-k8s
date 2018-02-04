@@ -3,7 +3,9 @@ syntax = "proto3";
 package resolve;
 
 service resolve {
-    rpc resolve (Source) returns (stream address);
+    rpc resolveStream (Source) returns (stream address);
+    rpc resolve (Source) returns ( address);
+
 }
 message Source {
     string name = 1;
@@ -11,4 +13,8 @@ message Source {
 }
 message address {
     string name = 1;
+}
+
+message allAddresses {
+    repeated address address =1 ;
 }
