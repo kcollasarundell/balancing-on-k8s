@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package resolve;
+
+service resolve {
+    rpc resolve (Source) returns (stream address);
+}
+message Source {
+    string name = 1;
+
+}
+message address {
+    string name = 1;
+}
