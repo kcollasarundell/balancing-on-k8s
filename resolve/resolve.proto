@@ -4,7 +4,6 @@ package resolve;
 
 service resolve {
     rpc resolveStream (Source) returns (stream address);
-    rpc resolve (Source) returns ( address);
 
 }
 message Source {
@@ -12,9 +11,5 @@ message Source {
 
 }
 message address {
-    string name = 1;
-}
-
-message allAddresses {
-    repeated address address =1 ;
+    repeated string name = 1;
 }

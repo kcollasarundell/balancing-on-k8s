@@ -1,10 +1,12 @@
 package resolver
 
 import (
+	"context"
+	"io"
 	"log"
 	"time"
 
-	resolve "github.com/kcollasarundell/balancing-on-k8s/resolve-source"
+	"github.com/kcollasarundell/balancing-on-k8s/resolve"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/resolver"
 )
@@ -20,11 +22,12 @@ type Resolver struct {
 	cc        resolver.ClientConn
 	source    resolve.ResolveClient
 	knownAddr []string
+	ctx       context.Context
 }
 
 func (r *Resolver) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOption) (resolver.Resolver, error) {
 	r.cc = cc
-	address := "service-discovery-upstream"
+	address := target.Authority
 
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(10*time.Second))
 	if err != nil {
@@ -32,6 +35,29 @@ func (r *Resolver) Build(target resolver.Target, cc resolver.ClientConn, opts re
 	}
 	defer conn.Close()
 	r.source = resolve.NewResolveClient(conn)
+	c, err := r.source.ResolveStream(context.Background(), &resolve.Source{Name: target.Endpoint})
+
+	go func() {
+		for {
+			rawAddresses, err := c.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				log.Fatalf("%v.resolveStream(_) = _, %v", r.source, err)
+			}
+
+			var backends []resolver.Address
+			for _, rawAddress := range rawAddresses.Name {
+				backends = append(backends, resolver.Address{
+					Addr:       rawAddress,
+					ServerName: rawAddress,
+				})
+			}
+			r.cc.NewAddress(backends)
+
+		}
+	}()
 
 	return r, nil
 }
@@ -44,10 +70,10 @@ func (*Resolver) ResolveNow(o resolver.ResolveNowOption) {}
 
 func (*Resolver) Close() {}
 
-func (r *Resolver) NewAddress(addrs []resolver.Address) {
-	r.cc.NewAddress(addrs)
-}
+// func (r *Resolver) NewAddress(addrs []resolver.Address) {
+// 	r.cc.NewAddress(addrs)
+// }
 
-func (r *Resolver) NewServiceConfig(sc string) {
-	r.cc.NewServiceConfig(sc)
-}
+// func (r *Resolver) NewServiceConfig(sc string) {
+// 	r.cc.NewServiceConfig(sc)
+// }
